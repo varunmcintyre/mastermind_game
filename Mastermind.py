@@ -28,12 +28,12 @@ class Sequence:
 def takeTurn(guess, guesses, scores):
     # make guess
     guesses.append(guess)
-    print("guess:",guess.getSequence())
+    #print("guess:",guess.getSequence())
 
     # score guess
     redCount, whiteCount = guess.compareSequence(solution)
     scores.append([redCount, whiteCount])
-    print(redCount,"red,",whiteCount,"white")
+    #print(redCount,"red,",whiteCount,"white")
 
 
 num_turns = []
@@ -71,5 +71,6 @@ for k in range(iterations):
     #print("Solved in",len(guesses),"guesses")
     num_turns.append(len(guesses))
 
-plt.hist(num_turns, bins=[1,2,3,4,5,6,7])
+plt.hist(num_turns, bins=[x for x in range(1, 9)])
 plt.show()
+
