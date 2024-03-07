@@ -25,7 +25,7 @@ class Sequence:
                 whiteCount += 1
         return redCount, whiteCount
 
-def takeTurn(guess):
+def takeTurn(guess, guesses, scores):
     # make guess
     guesses.append(guess)
     print("guess:",guess.getSequence())
@@ -35,40 +35,41 @@ def takeTurn(guess):
     scores.append([redCount, whiteCount])
     print(redCount,"red,",whiteCount,"white")
 
-#num_turns = []
-#for k in range(1000):
-p1, p2, p3, p4 = random.choice(ALL_PERMUTATIONS)
-solution = Sequence(p1, p2, p3, p4)
-print("solution:",solution.getSequence())
 
-# generate random first guess
-p1, p2, p3, p4 = random.choice(ALL_PERMUTATIONS)
-guess = Sequence(p1, p2, p3, p4)
+num_turns = []
+iterations = 1000
+for k in range(iterations):
+    # generate solution
+    p1, p2, p3, p4 = random.choice(ALL_PERMUTATIONS)
+    solution = Sequence(p1, p2, p3, p4)
+    #print("solution:",solution.getSequence())
 
-guesses = []
-scores = []
+    guesses = []
+    scores = []
+    
+    # generate random first guess
+    p1, p2, p3, p4 = random.choice(ALL_PERMUTATIONS)
+    guess = Sequence(p1, p2, p3, p4)
+    takeTurn(guess, guesses, scores)
 
-takeTurn(guess)
+    while guess.getSequence() != solution.getSequence():
+        # compare guess with previous guesses to see if it meets the criteria
+        i = 0
+        j = 0
+        while i < len(guesses):
+            t1, t2, t3, t4 = ALL_PERMUTATIONS[j]
+            guess = Sequence(t1, t2, t3, t4)
+            redTest, whiteTest = guess.compareSequence(guesses[i])
+            redCount, whiteCount = scores[i][0], scores[i][1]
+            if redTest == redCount and whiteTest == whiteCount:
+                i += 1
+            else:
+                i = 0
+                j += 1
+        takeTurn(guess, guesses, scores)
 
-while guess.getSequence() != solution.getSequence():
-    # compare guess with previous guesses to see if it meets the criteria
-    i = 0
-    j = 0
-    while i < len(guesses):
-        t1, t2, t3, t4 = ALL_PERMUTATIONS[j]
-        guess = Sequence(t1, t2, t3, t4)
-        redTest, whiteTest = guess.compareSequence(guesses[i])
-        redCount, whiteCount = scores[i][0], scores[i][1]
-        if redTest == redCount and whiteTest == whiteCount:
-            i += 1
-        else:
-            i = 0
-            j += 1
+    #print("Solved in",len(guesses),"guesses")
+    num_turns.append(len(guesses))
 
-    takeTurn(guess)
-
-print("solved in",len(guesses),"turns")
-#num_turns.append(len(guesses))
-
-#plt.hist(num_turns, bins=[1,2,3,4,5,6,7])
-#plt.show()
+plt.hist(num_turns, bins=[1,2,3,4,5,6,7])
+plt.show()
